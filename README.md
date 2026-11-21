@@ -6,6 +6,8 @@
 
 &rarr; [Live Pages](https://mebebruno.github.io/ArabicTrainer/)
 
+---
+
 ## Credits
 
 Vocabulary Data from: [hermitdave/FrequencyWords](https://github.com/hermitdave/FrequencyWords)
