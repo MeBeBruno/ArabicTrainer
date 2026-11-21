@@ -1,4 +1,265 @@
-<ul>
-  <li><a href="alphabet-flashcards.html">Alphabet Flash Cards</a></li>
-  <li><a href="bima.html">B.I.M.A.</a></li>
-</ul>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="referrer" content="no-referrer">
+	<title>Arabic Trainer</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="app.js" defer></script>
+</head>
+<body>
+	<header class="topbar">
+		<div class="mode-switch" role="tablist" aria-label="Lernbereich">
+			<button class="mode-btn active" role="tab" aria-selected="true" data-mode="alphabet" type="button">Alphabet</button>
+			<button class="mode-btn" role="tab" aria-selected="false" data-mode="vocab" type="button">Vokabeln</button>
+		</div>
+
+		<div class="topbar-actions">
+			<button id="openPoolBtn" class="icon-btn" type="button" aria-haspopup="dialog" aria-controls="poolDrawer">
+				<span>Pool</span>
+				<span class="subtle-count" id="poolCountBadge">0</span>
+			</button>
+			<button id="openMenuBtn" class="icon-btn" type="button" aria-haspopup="dialog" aria-controls="menuDrawer">
+				Menü
+			</button>
+		</div>
+	</header>
+
+	<main class="stage">
+		<!-- ==================== ALPHABET ==================== -->
+		<section id="view-alphabet" class="view" role="tabpanel">
+			<div class="card" id="alphaCard">
+				<div class="card-top">
+					<div class="progress-dots" id="alphaDots" aria-label="Fortschritt dieser Karte"></div>
+					<span class="card-counter" id="alphaSessionStatus">0 offen</span>
+				</div>
+
+				<div class="card-body">
+					<button id="alphaGlyphBtn" class="arabic-trigger arabic-letter" type="button" dir="rtl" lang="ar" title="Klicken zum Anhören">ا</button>
+
+					<div class="card-answer" id="alphaAnswer" aria-hidden="true" inert>
+						<div class="alpha-name" id="alphaName">Alif</div>
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<button id="alphaRevealBtn" class="btn btn-primary btn-block" type="button">Aufdecken</button>
+					<div class="grade-row" id="alphaGradeRow" hidden>
+						<button id="alphaWrongBtn" class="btn btn-wrong" type="button">
+							<span>Falsch</span>
+							<small id="alphaWrongHint">0/6</small>
+						</button>
+						<button id="alphaRightBtn" class="btn btn-right" type="button">
+							<span>Richtig</span>
+							<small id="alphaRightHint">1/6</small>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card empty-card" id="alphaDoneCard" hidden>
+				<h2>Session abgeschlossen</h2>
+				<p class="muted" id="alphaDoneText">Alle freigeschalteten Buchstaben sind gelernt.</p>
+				<div class="empty-actions">
+					<button id="alphaDoneUnlockBtn" class="btn btn-primary" type="button">+1 Buchstabe</button>
+					<button id="alphaDoneRepeatBtn" class="btn btn-secondary" type="button">Gelernte neu üben</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- ==================== VOKABELN ==================== -->
+		<section id="view-vocab" class="view" role="tabpanel" hidden>
+			<div class="card empty-card" id="vocabUploadCard">
+				<h2>Frequenzliste laden</h2>
+				<p class="muted">Lade deine <code>vocab_prepared.tsv</code>. Alles bleibt lokal im Browser.</p>
+				<div class="upload-row">
+					<label class="btn btn-primary file-btn">
+						Datei auswählen
+						<input id="tsvFileInput" type="file" accept=".tsv,.txt,text/tab-separated-values,text/plain" hidden>
+					</label>
+				</div>
+				<div class="progress-wrap" id="importProgressWrap" hidden>
+					<div class="progress-track">
+						<div class="progress-fill" id="importProgressFill"></div>
+					</div>
+					<span class="muted small" id="importProgressText">Lese Datei...</span>
+				</div>
+			</div>
+
+			<div class="card" id="vocabCard" hidden>
+				<div class="card-top">
+					<div class="progress-dots" id="vocabDots" aria-label="Fortschritt dieser Vokabel"></div>
+					<span class="card-counter" id="vocabSessionStatus">0 offen</span>
+				</div>
+
+				<div class="card-body">
+					<button id="vocabWordBtn" class="arabic-trigger arabic-word" type="button" dir="rtl" lang="ar" title="Klicken zum Anhören">في</button>
+
+					<div class="subtle-tools">
+						<button id="vocabSlowBtn" class="text-btn" type="button">Langsam</button>
+						<span class="dot-sep" aria-hidden="true">·</span>
+						<button id="vocabMicBtn" class="text-btn" type="button">Sprechen</button>
+						<span class="dot-sep" aria-hidden="true">·</span>
+						<button id="vocabHintBtn" class="text-btn" type="button">Hilfe</button>
+					</div>
+
+					<div class="inline-note" id="vocabHintLine" hidden></div>
+					<div class="inline-note" id="vocabSpeechLine" hidden></div>
+
+					<div class="card-answer vocab-answer" id="vocabAnswer" aria-hidden="true" inert>
+						<div class="vocab-vocalized" id="vocabVocalized" dir="rtl" lang="ar"></div>
+						<div class="vocab-pronunciation" id="vocabPronunciation"></div>
+						<div class="vocab-meaning" id="vocabMeaning"></div>
+						<div class="vocab-example" id="vocabExample" hidden></div>
+
+						<div class="answer-meta-actions">
+							<button id="vocabEditBtn" class="text-btn" type="button">Bearbeiten</button>
+							<span class="dot-sep" aria-hidden="true">·</span>
+							<a id="vocabPonsLink" class="text-btn" href="#" target="_blank" rel="noopener noreferrer">PONS ↗</a>
+						</div>
+
+						<form class="edit-form" id="vocabEditForm" hidden>
+							<input id="editVocalized" type="text" dir="rtl" lang="ar" placeholder="Vokalisiert (mit Harakat)">
+							<input id="editTranslit" type="text" placeholder="Umschrift / Aussprache">
+							<input id="editMeaning" type="text" placeholder="Bedeutung | Bsp.: ...">
+							<div class="edit-actions">
+								<button class="btn btn-primary btn-sm" type="submit">Speichern</button>
+								<button id="vocabEditCancel" class="btn btn-secondary btn-sm" type="button">Abbrechen</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<button id="vocabRevealBtn" class="btn btn-primary btn-block" type="button">Aufdecken</button>
+					<div class="grade-row" id="vocabGradeRow" hidden>
+						<button id="vocabWrongBtn" class="btn btn-wrong" type="button">
+							<span>Falsch</span>
+							<small id="vocabWrongHint">0/6</small>
+						</button>
+						<button id="vocabRightBtn" class="btn btn-right" type="button">
+							<span>Richtig</span>
+							<small id="vocabRightHint">1/6</small>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card empty-card" id="vocabDoneCard" hidden>
+				<h2>Session abgeschlossen</h2>
+				<p class="muted" id="vocabDoneText">Alle freigeschalteten Wörter sind gelernt.</p>
+				<div class="empty-actions">
+					<button id="vocabDoneUnlockOne" class="btn btn-primary" type="button">+1 Wort</button>
+					<button id="vocabDoneUnlockFive" class="btn btn-secondary" type="button">+5 Wörter</button>
+					<button id="vocabDoneRepeatBtn" class="btn btn-ghost" type="button">Gelernte neu üben</button>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<!-- ==================== BACKDROP ==================== -->
+	<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+
+	<!-- ==================== POOL DRAWER ==================== -->
+	<aside class="drawer" id="poolDrawer" role="dialog" aria-modal="true" aria-labelledby="poolDrawerTitle" hidden>
+		<div class="drawer-header">
+			<div>
+				<h2 id="poolDrawerTitle">Lernpool</h2>
+				<p class="muted small" id="poolDrawerSubtitle"></p>
+			</div>
+			<button class="icon-btn" data-close-drawer type="button" aria-label="Schließen">✕</button>
+		</div>
+
+		<div class="drawer-controls">
+			<div class="drawer-btn-row">
+				<button id="poolUnlockOneBtn" class="btn btn-primary btn-sm" type="button">+1 freischalten</button>
+				<button id="poolUnlockFiveBtn" class="btn btn-secondary btn-sm" type="button" hidden>+5 freischalten</button>
+			</div>
+			<input id="poolSearchInput" class="input" type="search" placeholder="Im Pool suchen..." hidden>
+		</div>
+
+		<div class="drawer-body" id="poolList"></div>
+	</aside>
+
+	<!-- ==================== MENU DRAWER ==================== -->
+	<aside class="drawer" id="menuDrawer" role="dialog" aria-modal="true" aria-labelledby="menuDrawerTitle" hidden>
+		<div class="drawer-header">
+			<h2 id="menuDrawerTitle">Menü</h2>
+			<button class="icon-btn" data-close-drawer type="button" aria-label="Schließen">✕</button>
+		</div>
+
+		<div class="drawer-body menu-sections">
+			<div class="menu-group">
+				<h3>Darstellung &amp; Audio</h3>
+				<label class="field-row">
+					<span>Design</span>
+					<select id="themeSelect" class="select">
+						<option value="auto">System</option>
+						<option value="light">Hell</option>
+						<option value="dark">Dunkel</option>
+					</select>
+				</label>
+				<label class="field-row">
+					<span>Aussprache</span>
+					<select id="audioModeSelect" class="select">
+						<option value="auto">Automatisch</option>
+						<option value="online">Online</option>
+						<option value="system">Systemstimme</option>
+					</select>
+				</label>
+			</div>
+
+			<div class="menu-group">
+				<h3>Vokabel-Datei</h3>
+				<p class="muted small" id="menuVocabInfo">Keine Datei geladen.</p>
+				<label class="field-row">
+					<span>Import-Limit</span>
+					<input id="vocabMaxImport" class="input input-sm" type="number" min="100" max="500000" step="1000" value="50000">
+				</label>
+				<label class="btn btn-secondary btn-sm file-btn">
+					Neue TSV / TXT laden
+					<input id="menuFileInput" type="file" accept=".tsv,.txt,text/tab-separated-values,text/plain" hidden>
+				</label>
+			</div>
+
+			<div class="menu-group">
+				<h3>Backup</h3>
+				<div class="drawer-btn-row">
+					<button id="exportBackupBtn" class="btn btn-secondary btn-sm" type="button">Export (.json)</button>
+					<label class="btn btn-secondary btn-sm file-btn">
+						Import (.json)
+						<input id="importBackupInput" type="file" accept=".json,application/json" hidden>
+					</label>
+				</div>
+			</div>
+
+			<div class="menu-group">
+				<h3>Tastenkürzel</h3>
+				<ul class="shortcut-list">
+					<li><kbd>Leertaste</kbd><span>Aufdecken</span></li>
+					<li><kbd>1</kbd> / <kbd>←</kbd><span>Falsch (-1)</span></li>
+					<li><kbd>2</kbd> / <kbd>→</kbd><span>Richtig (+1)</span></li>
+					<li><kbd>A</kbd><span>Anhören</span></li>
+					<li><kbd>S</kbd><span>Langsam (Vokabeln)</span></li>
+					<li><kbd>M</kbd><span>Sprechen prüfen</span></li>
+				</ul>
+			</div>
+
+			<div class="menu-group">
+				<h3>Zurücksetzen</h3>
+				<div class="stack-btns">
+					<button id="resetAlphaBtn" class="btn btn-danger-ghost btn-sm" type="button">Alphabet zurücksetzen</button>
+					<button id="resetVocabProgressBtn" class="btn btn-danger-ghost btn-sm" type="button">Vokabel-Fortschritt zurücksetzen</button>
+					<button id="deleteVocabBtn" class="btn btn-danger-ghost btn-sm" type="button">Vokabel-Datei löschen</button>
+				</div>
+			</div>
+		</div>
+	</aside>
+
+	<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
