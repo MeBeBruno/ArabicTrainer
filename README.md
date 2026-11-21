@@ -1,6 +1,6 @@
 # Arabic Trainer&#x24B7;
 
-<iframe src='https://mebebruno.github.io/BrunosAILabelSystem/label.html?code&text' style='height: 3rem; aspect-ratio: 2.003 / 1; border: none; background: transparent; overflow: hidden;' title='AI Label'></iframe>
+[Bruno's AI Label (CT)](https://mebebruno.github.io/BrunosAILabelSystem/label.html?code&text)
 
 > A simple HTML tool to learn Arabic 🇮🇶
 
