@@ -1,4 +1,4 @@
-# Arabic Trainer&#x24B7;
+# Arabic Trainer<sup>Ⓑ</sup>
 
 AI Label: B-[{CT}](https://mebebruno.github.io/BrunosAILabelSystem/explain.html?code&text)
 
