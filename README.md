@@ -1,6 +1,6 @@
 # Arabic Trainer&#x24B7;
 
-AI Label: B-[{C}](https://mebebruno.github.io/BrunosAILabelSystem/explain.html?code)
+AI Label: B-[{CT}](https://mebebruno.github.io/BrunosAILabelSystem/explain.html?code&text)
 
 > A simple HTML tool to learn Arabic 🇮🇶
 
